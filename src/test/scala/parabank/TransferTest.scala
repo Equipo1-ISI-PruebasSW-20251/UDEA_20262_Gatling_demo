@@ -14,20 +14,19 @@ class TransferTest extends Simulation{
 
       // Feeder CSV para datos de transferencias
   val transferFeeder = csv("transfers.csv").circular
-  
-  // 2 Scenario Definition
+
+    // 2 Scenario Definition
   val scn = scenario("Transfer Test")
-    .feed(transferFeeder)
-    .exec(http("Transfer test")
-      .post("/tranfer")
+  .feed(transferFeeder)
+  .exec(http("Transfer Request")
+      .post("/transfer")
       .queryParam("fromAccountId", "${fromAccountId}")
       .queryParam("toAccountId", "${toAccountId}")
       .queryParam("amount", "${amount}")
-       //Recibir información de la cuenta
       .check(status.is(200))
-    )
+         )
 
-  // 3 Load Scenario
+    // 3 Load Scenario
   setUp(
     scn.inject(rampUsersPerSec(5).to(15).during(30))
   ).protocols(httpConf);
